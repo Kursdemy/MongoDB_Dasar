@@ -1,5 +1,6 @@
 var express = require("express");
 var mongoose = require("mongoose");
+var bodyParser = require("body-parser");
 
 var app = express();
 
@@ -11,7 +12,8 @@ mongoose.connect("mongodb://root:Samsung33@ds157544.mlab.com:57544/mongoose",  {
     }
 });
 
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true}));
 
 app.get("/", function(req, res, next) {
     res.json("Selamat datang di Halaman Beranda")
@@ -22,18 +24,32 @@ var UserSchema = new mongoose.Schema({
     age : Number
 });
 
+// Membuat Model
 var User = mongoose.model("User", UserSchema);
 
 // Membuat New User 
+// app.get("/create-user", function(req, res, next){
+//     var user = new User();
+//     user.name = "Brandon";
+//     user.age = 17 ; 
+//     user.save(function(err){
+//         if (err) next(err)
+//         res.json(user);
+//     });
+// });
 
-app.get("/create-user", function(req, res, next){
+app.post("/create-user", function(req, res, next){
     var user = new User();
-    user.name = "Brandon";
-    user.age = 17 ; 
+    user.name = req.body.name;
+    user.age = req.body.age;
     user.save(function(err){
-        if (err) next(err)
+        if (err) console.log(err);
         res.json(user);
     });
+});
+
+app.post("/create-user", function(req, res, next){
+    var user = new User();
 });
 
 // app.get("/:name", function(req, res, next) {
